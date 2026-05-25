@@ -1,0 +1,391 @@
+:root {
+    --bg-color: #0b0f19;
+    --bg-gradient: linear-gradient(135deg, #0b0f19 0%, #1a1b4b 100%);
+    --card-bg: rgba(255, 255, 255, 0.03);
+    --card-border: rgba(255, 255, 255, 0.08);
+    --primary-color: #7b61ff; 
+    --primary-hover: #9b87ff;
+    --primary-glow: rgba(123, 97, 255, 0.4);
+    --secondary-color: rgba(255, 255, 255, 0.1);
+    --text-color: #ffffff;
+    --text-light: #94a3b8;
+    --accent-good: #10b981;
+    --accent-average: #f59e0b;
+    --accent-poor: #ef4444;
+    --border-radius: 20px;
+    --shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+    --font-family: 'Outfit', sans-serif;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: var(--font-family);
+    background: var(--bg-gradient);
+    color: var(--text-color);
+    min-height: 100vh;
+    padding: 40px 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    overflow-x: hidden;
+}
+
+/* Background animated glow points */
+body::before, body::after {
+    content: '';
+    position: absolute;
+    width: 300px;
+    height: 300px;
+    border-radius: 50%;
+    filter: blur(100px);
+    z-index: -1;
+    animation: float 10s infinite alternate;
+}
+
+body::before {
+    background: var(--primary-glow);
+    top: 10%;
+    left: 10%;
+}
+
+body::after {
+    background: rgba(16, 185, 129, 0.2);
+    bottom: 10%;
+    right: 10%;
+    animation-delay: -5s;
+}
+
+@keyframes float {
+    0% { transform: translate(0, 0); }
+    100% { transform: translate(50px, 50px); }
+}
+
+.container {
+    width: 100%;
+    max-width: 850px;
+    background: var(--card-bg);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid var(--card-border);
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow);
+    overflow: hidden;
+    position: relative;
+    z-index: 1;
+}
+
+header {
+    padding: 40px 30px;
+    text-align: center;
+    border-bottom: 1px solid var(--card-border);
+    position: relative;
+    overflow: hidden;
+}
+
+header::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, var(--primary-color), #00d2ff, var(--primary-color));
+    background-size: 200% 100%;
+    animation: gradientMove 3s linear infinite;
+}
+
+@keyframes gradientMove {
+    0% { background-position: 100% 0; }
+    100% { background-position: -100% 0; }
+}
+
+.logo-container {
+    font-size: 3.5rem;
+    margin-bottom: 15px;
+    color: var(--primary-color);
+    text-shadow: 0 0 20px var(--primary-glow);
+}
+
+header h1 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 10px;
+    background: linear-gradient(to right, #ffffff, #94a3b8);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    letter-spacing: -0.5px;
+}
+
+header p {
+    font-size: 1.1rem;
+    color: var(--text-light);
+    font-weight: 300;
+}
+
+main {
+    padding: 40px 30px;
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 25px;
+}
+
+label {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+    font-weight: 500;
+    color: #e2e8f0;
+    font-size: 0.95rem;
+    letter-spacing: 0.3px;
+}
+
+label i {
+    color: var(--primary-color);
+    margin-right: 10px;
+    width: 20px;
+    text-align: center;
+    font-size: 1.1em;
+}
+
+input[type="number"],
+input[type="time"],
+select {
+    width: 100%;
+    padding: 14px 16px;
+    background: rgba(0, 0, 0, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    font-family: var(--font-family);
+    font-size: 1rem;
+    color: var(--text-color);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Fix for date picker icon on dark background */
+input[type="time"]::-webkit-calendar-picker-indicator {
+    filter: invert(1);
+    opacity: 0.7;
+    cursor: pointer;
+}
+
+select option {
+    background: #0f172a;
+    color: white;
+}
+
+input::placeholder {
+    color: rgba(255, 255, 255, 0.2);
+}
+
+input:focus, select:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    background: rgba(0, 0, 0, 0.3);
+    box-shadow: 0 0 0 4px rgba(123, 97, 255, 0.15);
+}
+
+.radio-group {
+    display: flex;
+    gap: 15px;
+}
+
+.radio-group input[type="radio"] {
+    display: none;
+}
+
+.radio-btn {
+    flex: 1;
+    text-align: center;
+    padding: 12px;
+    background: rgba(0, 0, 0, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    font-weight: 500;
+    margin-bottom: 0px;
+}
+
+.radio-group input[type="radio"]:checked + .radio-btn {
+    background: var(--primary-color);
+    color: white;
+    border-color: var(--primary-color);
+    box-shadow: 0 4px 15px var(--primary-glow);
+}
+
+.form-actions {
+    display: flex;
+    gap: 20px;
+    margin-top: 40px;
+}
+
+.btn {
+    padding: 16px 28px;
+    border: none;
+    border-radius: 12px;
+    font-family: var(--font-family);
+    font-weight: 600;
+    font-size: 1.05rem;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+.btn:active {
+    transform: scale(0.96);
+}
+
+.btn-primary {
+    flex: 2;
+    background: linear-gradient(135deg, var(--primary-color), #4f46e5);
+    color: white;
+    box-shadow: 0 4px 15px var(--primary-glow);
+}
+
+.btn-primary:hover {
+    box-shadow: 0 8px 25px var(--primary-glow);
+    transform: translateY(-2px);
+}
+
+.btn-primary:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.btn-secondary {
+    flex: 1;
+    background: rgba(255, 255, 255, 0.05);
+    color: var(--text-color);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.btn-secondary:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.results-container {
+    margin-top: 40px;
+    padding-top: 40px;
+    border-top: 1px dashed var(--card-border);
+    animation: slideUpFade 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes slideUpFade {
+    0% { opacity: 0; transform: translateY(20px); }
+    100% { opacity: 1; transform: translateY(0); }
+}
+
+.results-container h2 {
+    text-align: center;
+    margin-bottom: 25px;
+    font-weight: 600;
+    color: var(--text-color);
+    font-size: 1.8rem;
+}
+
+.quality-card {
+    text-align: center;
+    background: rgba(0, 0, 0, 0.2);
+    padding: 30px;
+    border-radius: 16px;
+    margin-bottom: 25px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.quality-card h3 {
+    color: var(--text-light);
+    font-weight: 500;
+    margin-bottom: 15px;
+}
+
+.badge {
+    display: inline-block;
+    padding: 12px 40px;
+    font-size: 1.8rem;
+    font-weight: 700;
+    border-radius: 40px;
+    color: white;
+    box-shadow: 0 10px 20px -10px rgba(0,0,0,0.5);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.badge-good { background: linear-gradient(135deg, var(--accent-good), #059669); }
+.badge-average { background: linear-gradient(135deg, var(--accent-average), #d97706); }
+.badge-poor { background: linear-gradient(135deg, var(--accent-poor), #dc2626); }
+
+.tips-card {
+    background: rgba(255, 255, 255, 0.02);
+    padding: 25px;
+    border-radius: 16px;
+    border-left: 4px solid var(--primary-color);
+}
+
+.tips-card h3 {
+    margin-bottom: 20px;
+    color: #e2e8f0;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 1.3rem;
+}
+
+.tips-card h3 i {
+    color: var(--accent-average);
+}
+
+#tips-list {
+    padding-left: 10px;
+    list-style: none;
+}
+
+#tips-list li {
+    margin-bottom: 15px;
+    line-height: 1.6;
+    color: var(--text-light);
+    position: relative;
+    padding-left: 28px;
+}
+
+#tips-list li::before {
+    content: '→';
+    position: absolute;
+    left: 0;
+    color: var(--primary-color);
+    font-weight: bold;
+}
+
+.hidden {
+    display: none;
+}
+
+@media (max-width: 768px) {
+    .form-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .form-actions {
+        flex-direction: column;
+    }
+
+    body {
+        padding: 20px 10px;
+    }
+    
+    header {
+        padding: 30px 20px;
+    }
+}

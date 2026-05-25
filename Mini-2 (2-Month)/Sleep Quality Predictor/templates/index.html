@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sleep Quality Predictor</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../static/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo-container">
+                <i class="fa-solid fa-moon"></i>
+            </div>
+            <h1>Sleep Quality Predictor</h1>
+            <p>A smart way to monitor and improve your sleep</p>
+        </header>
+
+        <main>
+            <form id="prediction-form">
+                <div class="form-grid">
+                    <!-- Sleep Duration -->
+                    <div class="form-group">
+                        <label for="sleep_duration"><i class="fa-regular fa-clock"></i> Sleep Duration (hours)</label>
+                        <input type="number" id="sleep_duration" step="0.5" min="0" max="24" required placeholder="e.g. 7.5">
+                    </div>
+
+                    <!-- Bedtime -->
+                    <div class="form-group">
+                        <label for="bedtime"><i class="fa-solid fa-bed"></i> Bedtime</label>
+                        <input type="time" id="bedtime" required>
+                    </div>
+
+                    <!-- Wake up Time -->
+                    <div class="form-group">
+                        <label for="wakeup"><i class="fa-solid fa-sun"></i> Wake-up Time</label>
+                        <input type="time" id="wakeup" required>
+                    </div>
+
+                    <!-- Caffeine Intake -->
+                    <div class="form-group">
+                        <label for="caffeine"><i class="fa-solid fa-mug-hot"></i> Caffeine Intake</label>
+                        <select id="caffeine">
+                            <option value="None">None</option>
+                            <option value="Low">Low</option>
+                            <option value="Moderate">Moderate</option>
+                            <option value="High">High</option>
+                        </select>
+                    </div>
+
+                    <!-- Exercise Duration -->
+                    <div class="form-group">
+                        <label for="exercise"><i class="fa-solid fa-person-running"></i> Exercise Duration (mins)</label>
+                        <input type="number" id="exercise" min="0" required placeholder="e.g. 45">
+                    </div>
+
+                    <!-- Screen Time -->
+                    <div class="form-group">
+                        <label for="screen_time"><i class="fa-solid fa-mobile-screen"></i> Screen Time Before Bed (mins)</label>
+                        <input type="number" id="screen_time" min="0" required placeholder="e.g. 60">
+                    </div>
+
+
+                    <!-- Mood -->
+                    <div class="form-group">
+                        <label for="mood"><i class="fa-solid fa-face-smile"></i> Mood Before Sleep</label>
+                        <select id="mood">
+                            <option value="Happy">Happy</option>
+                            <option value="Neutral" selected>Neutral</option>
+                            <option value="Sad">Sad</option>
+                            <option value="Anxious">Anxious</option>
+                        </select>
+                    </div>
+
+                    <!-- Sleep Interruptions -->
+                    <div class="form-group">
+                        <label><i class="fa-solid fa-bell"></i> Sleep Interruptions (Woke up night)</label>
+                        <div class="radio-group">
+                            <input type="radio" id="inter_yes" name="interruptions" value="Yes">
+                            <label for="inter_yes" class="radio-btn">Yes</label>
+                            
+                            <input type="radio" id="inter_no" name="interruptions" value="No" checked>
+                            <label for="inter_no" class="radio-btn">No</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary"><i class="fa-solid fa-wand-magic-sparkles"></i> Predict Quality</button>
+                    <button type="button" id="reset-btn" class="btn btn-secondary"><i class="fa-solid fa-rotate-right"></i> Reset</button>
+                </div>
+            </form>
+
+            <div id="results" class="results-container hidden">
+                <h2>Prediction Results</h2>
+                
+                <div class="quality-card">
+                    <h3>Predicted Sleep Quality</h3>
+                    <div id="quality-badge" class="badge">--</div>
+                </div>
+
+                <div class="tips-card">
+                    <h3><i class="fa-solid fa-lightbulb"></i> Suggestions & Tips</h3>
+                    <ul id="tips-list">
+                    </ul>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        const form = document.getElementById('prediction-form');
+        const resetBtn = document.getElementById('reset-btn');
+        const resultsDiv = document.getElementById('results');
+        const qualityBadge = document.getElementById('quality-badge');
+        const tipsList = document.getElementById('tips-list');
+
+        resetBtn.addEventListener('click', () => {
+            form.reset();
+            resultsDiv.classList.add('hidden');
+        });
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const data = {
+                sleep_duration: document.getElementById('sleep_duration').value,
+                bedtime: document.getElementById('bedtime').value,
+                wakeup: document.getElementById('wakeup').value,
+                caffeine: document.getElementById('caffeine').value,
+                exercise: document.getElementById('exercise').value,
+                screen_time: document.getElementById('screen_time').value,
+                mood: document.getElementById('mood').value,
+                interruptions: document.querySelector('input[name="interruptions"]:checked').value
+            };
+
+            const submitBtn = form.querySelector('button[type="submit"]');
+            const originalText = submitBtn.innerHTML;
+            submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Predicting...';
+            submitBtn.disabled = true;
+
+            try {
+                const response = await fetch('/predict', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    qualityBadge.textContent = result.quality;
+                    qualityBadge.className = 'badge badge-' + result.quality.toLowerCase();
+                    
+                    tipsList.innerHTML = '';
+                    result.tips.forEach(tip => {
+                        const li = document.createElement('li');
+                        li.textContent = tip;
+                        tipsList.appendChild(li);
+                    });
+                    
+                    resultsDiv.classList.remove('hidden');
+                    resultsDiv.scrollIntoView({ behavior: 'smooth' });
+                } else {
+                    alert('Error: ' + result.error);
+                }
+            } catch (err) {
+                console.warn('Server not available. Using local mock data for preview...', err);
+                
+                // Fallback mock logic for UI preview
+                const duration = parseFloat(data.sleep_duration) || 0;
+                let quality = 'Average';
+                if (duration >= 7 && data.interruptions === 'No') quality = 'Good';
+                else if (duration < 5 || data.interruptions === 'Yes') quality = 'Poor';
+                
+                qualityBadge.textContent = quality;
+                qualityBadge.className = 'badge badge-' + quality.toLowerCase();
+                
+                tipsList.innerHTML = '';
+                const tips = [
+                    "Try to maintain a consistent sleep schedule even on weekends.",
+                    "Ensure your sleeping environment is quiet, dark, and cool.",
+                    "Relaxing before bed with a book or meditation can help."
+                ];
+                tips.forEach(tip => {
+                    const li = document.createElement('li');
+                    li.textContent = tip;
+                    tipsList.appendChild(li);
+                });
+                
+                resultsDiv.classList.remove('hidden');
+                resultsDiv.scrollIntoView({ behavior: 'smooth' });
+                
+            } finally {
+                submitBtn.innerHTML = originalText;
+                submitBtn.disabled = false;
+            }
+        });
+    </script>
+</body>
+</html>
