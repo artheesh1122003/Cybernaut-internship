@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-5">
+        <div class="card shadow border-0 mt-4 rounded-3 text-center">
+            <div class="card-header {% if violation.status == 'Paid' %}bg-success{% else %}bg-warning text-dark{% endif %} text-white py-3">
+                <h3 class="mb-0">Digital Challan</h3>
+            </div>
+            <div class="card-body p-4 text-start">
+                <div class="text-center mb-4">
+                    {% if violation.qr_code_path %}
+                        <img src="{{ url_for('static', filename=violation.qr_code_path) }}" alt="QR Code" class="img-fluid border p-2 rounded" style="max-width: 200px;">
+                    {% endif %}
+                    <p class="text-muted small mt-2 mb-0">Scan for online status</p>
+                </div>
+                
+                <h5 class="fw-bold text-center mb-4 border-bottom pb-2">Vehicle: <span class="text-primary">{{ violation.vehicle_number }}</span></h5>
+                
+                <div class="row mb-2">
+                    <div class="col-5 fw-semibold text-muted">Challan ID:</div>
+                    <div class="col-7">#{{ violation.id }}</div>
+                </div>
+                <div class="row mb-2">
+                    <div class="col-5 fw-semibold text-muted">Offense:</div>
+                    <div class="col-7">{{ violation.violation_type }}</div>
+                </div>
+                <div class="row mb-2">
+                    <div class="col-5 fw-semibold text-muted">Location:</div>
+                    <div class="col-7">{{ violation.location }}</div>
+                </div>
+                <div class="row mb-2">
+                    <div class="col-5 fw-semibold text-muted">Date:</div>
+                    <div class="col-7">{{ violation.date.strftime('%d %b %Y') }}</div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-5 fw-semibold text-muted">Amount Due:</div>
+                    <div class="col-7 fs-5 fw-bold text-danger">₹{{ violation.fine_amount }}</div>
+                </div>
+                
+                <div class="alert {% if violation.status == 'Paid' %}alert-success{% else %}alert-danger{% endif %} text-center mb-0 mt-4 py-2 fs-5">
+                    <strong>Status: </strong> {{ violation.status }}
+                </div>
+            </div>
+            <div class="card-footer bg-light text-muted small py-3">
+                Issuer: Smart Traffic Authority
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,75 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2 class="mb-4">Violation History</h2>
+
+<div class="card shadow-sm mb-4">
+    <div class="card-body">
+        <form method="GET" action="{{ url_for('history') }}" class="row g-3 align-items-center">
+            <div class="col-auto">
+                <input type="text" class="form-control" name="search" placeholder="Search Vehicle Number" value="{{ request.args.get('search', '') }}">
+            </div>
+            <div class="col-auto">
+                <select class="form-select" name="status">
+                    <option value="All" {% if request.args.get('status') == 'All' %}selected{% endif %}>All Status</option>
+                    <option value="Unpaid" {% if request.args.get('status') == 'Unpaid' %}selected{% endif %}>Unpaid</option>
+                    <option value="Paid" {% if request.args.get('status') == 'Paid' %}selected{% endif %}>Paid</option>
+                </select>
+            </div>
+            <div class="col-auto">
+                <button type="submit" class="btn btn-primary">Filter</button>
+                <a href="{{ url_for('history') }}" class="btn btn-secondary">Clear</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="table-responsive bg-white rounded shadow-sm">
+    <table class="table table-hover align-middle mb-0">
+        <thead class="table-dark">
+            <tr>
+                <th>ID</th>
+                <th>Vehicle No.</th>
+                <th>Violation</th>
+                <th>Location</th>
+                <th>Date</th>
+                <th>Fine</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for v in violations %}
+            <tr>
+                <td>{{ v.id }}</td>
+                <td class="fw-bold">{{ v.vehicle_number }}</td>
+                <td>{{ v.violation_type }}</td>
+                <td>{{ v.location }}</td>
+                <td>{{ v.date.strftime('%Y-%m-%d') }}</td>
+                <td>₹{{ v.fine_amount }}</td>
+                <td>
+                    {% if v.status == 'Unpaid' %}
+                    <span class="badge bg-danger">Unpaid</span>
+                    {% else %}
+                    <span class="badge bg-success">Paid</span>
+                    {% endif %}
+                </td>
+                <td>
+                    <div class="d-flex gap-2">
+                        <a href="{{ url_for('status', violation_id=v.id) }}" class="btn btn-sm btn-info text-dark fw-bold" target="_blank">View Challan</a>
+                        {% if v.status == 'Unpaid' %}
+                        <form method="POST" action="{{ url_for('update_status', violation_id=v.id) }}" onsubmit="return confirm('Mark as paid?');" class="m-0 p-0">
+                            <button type="submit" class="btn btn-sm btn-success">Mark Paid</button>
+                        </form>
+                        {% endif %}
+                    </div>
+                </td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="8" class="text-center py-4 text-muted">No records found.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

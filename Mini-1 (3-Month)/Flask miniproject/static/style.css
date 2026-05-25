@@ -1,0 +1,16 @@
+body {
+    background-color: #f8f9fa;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+}
+
+.card {
+    transition: transform 0.2s;
+}
+
+.table th {
+    white-space: nowrap;
+}
+
+.display-5 {
+    color: #2c3e50;
+}

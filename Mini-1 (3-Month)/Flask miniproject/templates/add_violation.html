@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card shadow-sm mb-5">
+            <div class="card-header bg-danger text-white">
+                <h4 class="mb-0">Log Traffic Violation</h4>
+            </div>
+            <div class="card-body p-4">
+                <form method="POST" action="">
+                    <div class="mb-3">
+                        <label for="vehicle_number" class="form-label">Vehicle Number</label>
+                        <input type="text" class="form-control" id="vehicle_number" name="vehicle_number" placeholder="e.g. MH 01 AB 1234" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="violation_type" class="form-label">Violation Type</label>
+                        <select class="form-select" id="violation_type" name="violation_type" required>
+                            <option value="" disabled selected>Select Violation Type</option>
+                            <option value="No Helmet">No Helmet</option>
+                            <option value="Overspeeding">Overspeeding</option>
+                            <option value="Jumping Red Light">Jumping Red Light</option>
+                            <option value="No Parking">No Parking</option>
+                            <option value="Driving Without License">Driving Without License</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="location" class="form-label">Location</label>
+                        <input type="text" class="form-control" id="location" name="location" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="date" class="form-label">Date</label>
+                        <input type="date" class="form-control" id="date" name="date" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="fine_amount" class="form-label">Fine Amount (₹)</label>
+                        <input type="number" class="form-control" id="fine_amount" name="fine_amount" min="0" required>
+                    </div>
+                    <button type="submit" class="btn btn-danger w-100">Submit Violation</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    document.getElementById('date').valueAsDate = new Date();
+</script>
+{% endblock %}
